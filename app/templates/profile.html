@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+
+{% block css %}
+<style>
+    .boxes{
+        border:1px solid black;
+        background-color:#ADD8E6;
+    }
+    img{
+        max-width:100%;
+    }
+    #pad{
+        padding-top:20px;
+    }
+</style>
+{% endblock %}
+
+{% block js %}
+{% endblock %}
+
+{% block main %}
+<div class="container" id="pad">
+    <div class="col-md-3">
+        <img src="{{user['image']}}" style="max-height:500px,max-width:500px">
+    </div>
+    <div class="col-md-9">
+        <div class="boxes">
+            <p>{{user['fname']}} {{user['lname']}}</p>
+        </div>
+        <br>
+        <div class="boxes">
+            <p>Profile Added On: {{user['addon']}}</p>
+        </div>
+        <div class="boxes">
+            <p> Username: {{user['username']}} <br>
+                 ID: {{user['id']}} <br>
+                 Sex: {{user['sex']}} <br>
+                 Age: {{user['age']}} <br>
+                 Highest Score: {{user['highscore']}} <br>
+                 TDollars: {{user['tdollars']}} <br>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
