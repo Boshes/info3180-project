@@ -16,9 +16,7 @@ from werkzeug import secure_filename
 import json
 import time
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://testuser:password@localhost/profiledb"
 
-db.create_all()
 
 ###
 # Routing for your application.
