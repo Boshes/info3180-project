@@ -5,6 +5,7 @@ flask
 Flask-SQLAlchemy
 Flask-WTF
 psycopg2
+Flask-Heroku
 
 
 # ----------------------
