@@ -2,7 +2,7 @@ import os
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.heroku import Heroku
-from flask.ext.psycopg2 import psycopg2
+import psycopg2
 import urlparse
 
 app=Flask(__name__)
