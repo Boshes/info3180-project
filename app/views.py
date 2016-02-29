@@ -16,7 +16,7 @@ from werkzeug import secure_filename
 import json
 import time
 
-
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif','png'])
 
 ###
 # Routing for your application.
@@ -38,22 +38,27 @@ def profile():
     form = ProfileForm(request.form)
     if request.method == 'POST':
         uploadedfile = request.files['uploadedfile']
-        uploadedfilename = form.username.data + '_' + secure_filename(uploadedfile.filename)
-        filepath = os.path.join(os.getcwd() + '/app/static/uploads/',uploadedfilename)
-        uploadedfile.save(filepath)
+        if uploadedfile and allowed_file(uploadedfile.filename):
+            uploadedfilename = form.username.data + '_' + secure_filename(uploadedfile.filename)
+            filepath = os.path.join(os.getcwd() + '/app/static/uploads/',uploadedfilename)
+            uploadedfile.save(filepath)
         user = User(uploadedfilename,form.username.data,form.firstname.data,form.lastname.data,form.age.data,form.sex.data,datetime.now())
         db.session.add(user)
         db.session.commit()
         return redirect('/profile/'+str(User.query.filter_by(username=user.username).first().id))
     else:
         return render_template('profileform.html',form=form)
+        
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 @app.route('/profile/<userid>', methods=['POST', 'GET'])
 def selectedprofile(userid):
   user = User.query.filter_by(id=userid).first()
   image = '/static/uploads/' + user.userimage
-  if request.method == 'POST':
+  if request.method == 'POST' or ('Content-Type' in request.headers and request.headers['Content-Type'] == 'application/json'):
     return jsonify(id=user.id, image=image,username=user.username, sex=user.usersex, age=user.userage, highscore=user.userhighscore, tdollars=user.usertdollars,addedon=user.useraddon)
   else:
     user = {'id':user.id,'image':image, 'username':user.username,'fname':user.userfname, 'lname':user.userlname,'age':user.userage, 'sex':user.usersex, 'highscore':user.userhighscore, 'tdollars':user.usertdollars,'addon':timeinfo(user.useraddon)}
@@ -62,7 +67,7 @@ def selectedprofile(userid):
 @app.route('/profiles', methods=["GET", "POST"])
 def profiles():
   users = db.session.query(User).all()
-  if request.method == "POST":
+  if request.method == "POST" or ('Content-Type' in request.headers and request.headers['Content-Type'] == 'application/json'):
     userlist=[]
     for user in users:
       userlist.append({'id':user.id,'username':user.username})
